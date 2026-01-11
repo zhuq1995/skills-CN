@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c:*)",
+      "Bash(claude skill install:*)",
+      "Bash(claude skill add:*)"
+    ]
+  }
+}

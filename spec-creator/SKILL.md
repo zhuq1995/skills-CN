@@ -12,7 +12,7 @@ description: 创建结构化技术规范文档(Spec)，包括需求文档(design
 每个规范包含三个核心文档：
 
 ```
-.specs/[规范名称]/
+specs/[规范名称]/
 ├── requirements.md    # 需求文档 - 定义"做什么"
 ├── design.md          # 设计文档 - 定义"如何做"
 └── tasks.md           # 任务分解 - 定义"谁来做"
@@ -212,10 +212,10 @@ WHEN [触发条件] THEN THE System SHALL [预期结果]
 
 ## 目录创建位置
 
-规范文档创建在项目根目录的 `.kiro/specs/[规范名称]/` 目录下：
+规范文档创建在项目根目录的 `.claude/specs/[规范名称]/` 目录下：
 
 ```bash
-.kiro/specs/
+.claude/specs/
 ├── existing-spec-1/
 ├── existing-spec-2/
 └── [新规范名称]/
@@ -226,9 +226,5 @@ WHEN [触发条件] THEN THE System SHALL [预期结果]
 
 ## 完整示例
 
-参考技能目录下的示例规范：
-- `.skills/spec-creator/examples/counter-example/` - 计数器功能（简单示例）
-
-参考项目中的规范：
-- `.kiro/specs/prompt-engineering-practice/` - 提示词工程练习系统
-- `.kiro/specs/plugin-architecture-improvements/` - 插件架构改进
+参考examples目录下的示例规范：
+- `examples/counter-example/` - 计数器功能（简单示例）
