@@ -138,6 +138,83 @@ description: 使用 Chrome DevTools MCP 协议测试本地 Web 应用的工具�
 ❌ **不要**忘记在操作后验证结果
 ❌ **不要**假设页面已完全加载 - 动态内容可能需要等待
 
+## 处理大型页面
+
+当页面元素过多导致 `take_snapshot` 返回内容超长、上下文超出限制时，使用以下策略：
+
+### 策略 1：仅获取可交互元素
+
+```
+mcp__chrome-devtools-mcp__take_snapshot
+{
+  "interactable": true
+}
+```
+
+这会过滤掉纯展示性元素，只返回按钮、输入框、链接等可交互元素。
+
+### 策略 2：使用 JavaScript 定向查找
+
+跳过 `take_snapshot`，直接用 `evaluate_script` 查询特定元素：
+
+```
+mcp__chrome-devtools-mcp__evaluate_script
+{
+  "script": "Array.from(document.querySelectorAll('button, input, a')).map(el => ({tag: el.tagName, id: el.id, text: el.textContent.trim().slice(0,30)}))"
+}
+```
+
+更精确的定向查找：
+
+```
+mcp__chrome-devtools-mcp__evaluate_script
+{
+  "script": "document.querySelector('#login-form button[type=submit]')?.id"
+}
+```
+
+### 策略 3：分区域检查
+
+对于复杂页面，分区域获取元素而非全量快照：
+
+```
+第一步：确定目标区域
+→ evaluate_script 查找特定容器
+
+第二步：区域内快照（如支持）
+→ 限定在特定 DOM 子树
+
+第三步：执行操作
+→ 使用获取的信息操作元素
+```
+
+### 策略 4：轻量级验证工作流
+
+当不需要完整快照时，使用替代方案：
+
+```
+1. evaluate_script - 检查特定元素是否存在
+2. click/fill - 直接用选择器操作（如 MCP 支持）
+3. take_screenshot - 视觉验证结果
+4. list_console_messages - 检查错误
+```
+
+### 策略 5：控制返回信息量
+
+- ❌ 避免使用 `verbose: true`（除非必要）
+- ✅ 只获取需要的元素属性
+- ✅ 优先使用 `take_screenshot` 进行视觉验证
+
+### 推荐的大型页面工作流
+
+```
+1. take_screenshot - 先截图了解页面布局
+2. evaluate_script - 定向查询目标元素
+3. 执行操作 - click/fill/hover
+4. take_screenshot - 验证结果
+5. list_console_messages - 检查错误
+```
+
 ## 常见问题
 
 **Q: 找不到元素？**
